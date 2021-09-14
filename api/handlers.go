@@ -8,7 +8,7 @@ import (
 )
 
 func sayHello(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("Hello!!n.n!!!"))
+	w.Write([]byte("HELLO"))
 	clocker.NewClocker()
 }
 

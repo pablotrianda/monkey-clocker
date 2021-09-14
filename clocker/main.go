@@ -1,7 +1,14 @@
 package clocker
 
-import "log"
+import (
+	"log"
+)
+
+type Clocker struct {
+	name string
+}
 
 func NewClocker() {
+
 	log.Println("new clocker created")
 }

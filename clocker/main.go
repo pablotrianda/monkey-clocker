@@ -5,10 +5,10 @@ import (
 )
 
 type Clocker struct {
-	name string
+	Name string
 }
 
-func NewClocker() {
-
+func NewClocker(newSchema Clocker) {
+	log.Println(newSchema)
 	log.Println("new clocker created")
 }

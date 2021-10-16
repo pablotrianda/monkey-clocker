@@ -9,7 +9,7 @@ func routes() *chi.Mux {
 	r := chi.NewMux()
 	r.Use(middleware.Logger)
 	r.Get("/", sayHello)
-	r.Post("/schema", newSchema)
+	r.Post("/set-agenda", newSchema)
 	r.Get("/{id}", wichID)
 
 	return r

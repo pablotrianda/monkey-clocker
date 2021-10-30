@@ -2,25 +2,18 @@ package api
 
 import (
 	"encoding/json"
+	"io"
 	"net/http"
 
 	"github.com/go-chi/chi"
 	"github.com/pablotrianda/monkey-clocker/clocker"
 )
 
-type Response struct {
-	Name      string
-	BusyHours string `json:"busy_hours"`
-}
-
 func newSchema(w http.ResponseWriter, r *http.Request) {
-	var res Response
-	err := json.NewDecoder(r.Body).Decode(&res)
+	res, err := io.ReadAll(r.Body)
 	handleErr(err, w, http.StatusBadRequest)
-	busyHours, err := convertStringArrayToIntArray(res.BusyHours)
-	handleErr(err, w, http.StatusInternalServerError)
 
-	newClocker, err := clocker.NewClocker(res.Name, busyHours)
+	newClocker, err := clocker.NewClocker(res)
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(newClocker)

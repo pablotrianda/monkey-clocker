@@ -60,6 +60,7 @@ func TestApiGetByID(t *testing.T) {
 func TestCreateClockerFromPostRequest(t *testing.T) {
 	mcPostBody := map[string]interface{}{
 		"name":       "Testting",
+		"work_hours": "8,20",
 		"busy_hours": "12,13,14",
 	}
 	body, err := json.Marshal(mcPostBody)
@@ -67,7 +68,7 @@ func TestCreateClockerFromPostRequest(t *testing.T) {
 		t.Error("Error to pase the json")
 	}
 
-	req, errR := http.NewRequest("POST", "/schema/", bytes.NewReader(body))
+	req, errR := http.NewRequest("POST", "/set-agenda/", bytes.NewReader(body))
 	if errR != nil {
 		t.Errorf("Error creating a new request: %v", err)
 	}

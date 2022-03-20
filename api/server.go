@@ -6,7 +6,6 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
-	"time"
 
 	"github.com/go-chi/chi"
 )
@@ -18,14 +17,27 @@ type server struct {
 func (s *server) startServer() {
 	log.Printf("starting server... on: %s", s.Addr)
 
+	idleConnsClosed := make(chan struct{})
 	go func() {
-		if err := s.ListenAndServe(); err != nil {
-			log.Println("Error to start the server... :(")
-			log.Println(err.Error())
+		sigint := make(chan os.Signal, 1)
+		signal.Notify(sigint, os.Interrupt)
+		<-sigint
+
+		// We received an interrupt signal, shut down.
+		if err := s.Shutdown(context.Background()); err != nil {
+			// Error from closing listeners, or context timeout:
+			log.Printf("HTTP server Shutdown: %v", err)
 		}
+
+		close(idleConnsClosed)
 	}()
 
-	s.gracefulShutdown()
+	// Start the server
+	if err := s.ListenAndServe(); err != http.ErrServerClosed {
+		log.Println("Error to start the server... :(")
+	}
+
+	<-idleConnsClosed
 }
 
 func newServer(port string, mux *chi.Mux) *server {
@@ -35,21 +47,4 @@ func newServer(port string, mux *chi.Mux) *server {
 	}
 
 	return &server{s}
-}
-
-func (s *server) gracefulShutdown() {
-	quit := make(chan os.Signal, 1)
-
-	signal.Notify(quit, os.Interrupt)
-	sig := <-quit
-	log.Printf("cmd is shutting down %s", sig.String())
-
-	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
-	defer cancel()
-
-	s.SetKeepAlivesEnabled(false)
-	if err := s.Shutdown(ctx); err != nil {
-		log.Fatalf("could not gracefully shutdown the cmd %s", err.Error())
-	}
-	log.Printf("cmd stopped")
 }

@@ -11,6 +11,7 @@ func routes() *chi.Mux {
 	r.Get("/", sayHello)
 	r.Post("/set-agenda", newSchema)
 	r.Get("/{id}", wichID)
+	r.Post("/user/login", loginUser)
 
 	return r
 }

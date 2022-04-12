@@ -3,6 +3,7 @@ package api
 import (
 	"encoding/json"
 	"io"
+	"log"
 	"net/http"
 
 	"github.com/go-chi/chi"
@@ -26,6 +27,10 @@ func sayHello(w http.ResponseWriter, r *http.Request) {
 
 func wichID(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, "id")
-
 	w.Write([]byte(id))
+}
+
+func loginUser(w http.ResponseWriter, r *http.Request) {
+	log.Println(r.Header)
+	w.Write([]byte("Heeellooo"))
 }

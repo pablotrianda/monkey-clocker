@@ -3,7 +3,7 @@
 ## Description
 This tool allow create events and save this.
 
-## Run on developemnt mode
+## Run on development mode
 Install [Air](https://github.com/cosmtrek/air)
 `air`
 
